@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body>
+    <h1>課題です</h1>
+    <% require 'pg' %>
+    <% connection = PG::connect(dbname: "department") %>
+    <% connection.internal_encoding = "UTF-8" %>
+    <form action="kadai_indicate.cgi" method="POST">
+       下記に文字を入力してください<br><br>
+      <input type="text"  name="input" ><br>
+      <input type="submit" name="送信" >
+
+    </form>
+    <% result = connection.exec("SELECT * FROM divisions;") %>
+    <% data = [] %>
+    <% result.each do |record| %>
+      <%  data << "部署：#{record["division_name"]}　人数：#{record["division_id"]}" %>
+    <% end %>
+    <form action="kadai.cgi" method="POST">
+       下記のボタンを押すと、当社の人事情報ページに飛びます<br><br>
+      <input type="text" name="kadai" value="<%= data.join(' ') %>">
+      <input type="submit" name="送信" >
+    </form>
+  </body>
+</html>
